@@ -1,22 +1,16 @@
-from typing import Union
-from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi import FastAPI, File, UploadFile
 
 app = FastAPI()
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
+@app.post("/uploadfiles/")
+async def create_upload_files(
+    original_video: UploadFile = File(description="Original Video"),
+    key_frame: UploadFile = File(description="Key Frame Image"),
+    reference_img: UploadFile = File(description="Reference Image"),
+):
+    # TODO: OpenCV로 이미지, 비디오 파일을 띄우기
 
-@app.get('/')
-def read_root():
-    return {"Hello": "World"}
-
-@app.get('/items/{item_id}')
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
+    print(original_video.file)
+    print(key_frame)
+    print(reference_img)
+    return {"output_video": "hello world"}

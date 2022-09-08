@@ -1,4 +1,4 @@
-name: fast-api
+name: yordang-backend
 channels:
   - defaults
 dependencies:

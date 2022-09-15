@@ -8,5 +8,6 @@ conda env create --file environment.yaml
 
 ### 서버 실행
 ```shell
+cd src  # src 디렉토리로 이동
 uvicorn main:app --reload
 ```

@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from PIL import Image
 from io import BytesIO
-from fastapi.responses import StreamingResponse, FileResponse
+from fastapi.responses import StreamingResponse
 
 app = FastAPI()
 
@@ -36,28 +36,9 @@ async def upload_files_and_return_video (
 
     # TODO: Request model to generate a video
 
-    # TODO: Read video file
+    # Read video file & convert into generator
     def iterfile():
-        with open('../samples/Cat.mp4', mode='rb') as file_like:
-            yield from file_like
-            
-    #     for file_like in original_video.read():
-    #         yield from file_like
-    #     with open (BytesIO(original_video.read())) as file_like:
-    #         yield from file_like
-
-    # cap = cv2.VideoCapture(original_video.read())
-    # frame_list = []
-    # while(cap.isOpened()) :
-    #     ret, frame = cap.read()
-    #     if ret : #images 파일 안에 넣어놓기
-    #         frame_list.append(frame)
-    #     if cv2.waitKey(1) & 0xFF == ord('q') :
-    #         break
-    #     else :
-    #         break
-    # cap.release()
-
-    # TODO: test return video file
+        yield from original_video.file        
+    
+    # return video object
     return StreamingResponse(iterfile(), media_type='video/mp4')
-    # return FileResponse('../samples/Cat.mp4')

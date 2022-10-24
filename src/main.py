@@ -37,8 +37,12 @@ async def upload_files_and_return_video (
     # TODO: Request model to generate a video
 
     # Read video file & convert into generator
+    # def iterfile():
+    #     yield from original_video.file        
     def iterfile():
-        yield from original_video.file        
-    
+        output_video_path = '../samples/Cat.mp4' # 원하는 파일 경로로 변경
+        with open(output_video_path, mode='rb') as file_like:
+            yield from file_like
+
     # return video object
     return StreamingResponse(iterfile(), media_type='video/mp4')

@@ -29,12 +29,12 @@ async def upload_files (
     # cv2.imshow('image', swaped_reference_img)
     # cv2.waitKey(50)
     # cv2.destroyAllWindows()
-
-    ###############################################################
-    # TODO: 여기에 모델 추가
     # Read video file & convert into generator
     # def iterfile():
     #     yield from original_video.file 
+
+    ###############################################################
+    # TODO: 여기에 모델 추가
     fourcc = cv2.VideoWriter_fourcc(*'H264')        # TODO: 비디오 생성 코덱을 반드시 'H264'로 설정해주셔야 합니다 !!
     cap = cv2.VideoCapture()
     cap.open('../samples/Cat.mp4')

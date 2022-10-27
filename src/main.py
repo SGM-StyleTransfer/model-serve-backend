@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image
 from io import BytesIO
 from fastapi.responses import StreamingResponse
+from tqdm import tqdm
 
 app = FastAPI()
 
@@ -20,14 +21,9 @@ async def upload_files_and_return_video (
 ):
     # 받은 file을 numpy의 ndarray로 변환
     # 비디오 파일은 모델에서 어떤 타입으로 사용되는지 확인 필요
-    key_frame = load_img_into_np_array(await key_frame.read())
-    swaped_key_frame = cv2.cvtColor(key_frame, cv2.COLOR_BGR2RGB)
-    
+    key_frame = load_img_into_np_array(await key_frame.read())    
     reference_img = load_img_into_np_array(await reference_img.read())
-    swaped_reference_img = cv2.cvtColor(reference_img, cv2.COLOR_BGR2RGB)
-    
     mask_img = load_img_into_np_array(await mask_img.read())
-    swaped_mask_img = cv2.cvtColor(mask_img, cv2.COLOR_BGR2RGB)
 
     # 변환한 ndarray를 openCV로 확인
     # cv2.imshow('image', swaped_reference_img)
@@ -38,7 +34,18 @@ async def upload_files_and_return_video (
 
     # Read video file & convert into generator
     # def iterfile():
-    #     yield from original_video.file        
+    #     yield from original_video.file 
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')   
+    cap = cv2.VideoCapture()
+    cap.open('../samples/Cat.mp4')
+    videoWriter = cv2.VideoWriter('../samples/ResultCat.mp4', fourcc, int(cap.get(cv2.CAP_PROP_FPS)), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+    all_f = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+    for i in tqdm(range(int(all_f))):
+        ret, frame = cap.read()
+        videoWriter.write(frame)
+    cap.release()
+    videoWriter.release()
+
     def iterfile():
         output_video_path = '../samples/Cat.mp4' # 원하는 파일 경로로 변경
         with open(output_video_path, mode='rb') as file_like:

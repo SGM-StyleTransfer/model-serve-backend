@@ -13,7 +13,7 @@ def load_img_into_np_array(data):
     return np.array(Image.open(BytesIO(data)))
 
 @app.post("/api/uploadfiles/")
-async def upload_files_and_return_video (
+async def upload_files (
     original_video: UploadFile = File(description="Original Video"),
     key_frame: UploadFile = File(description="Key Frame Image"),
     reference_img: UploadFile = File(description="Reference Image"),
@@ -30,12 +30,12 @@ async def upload_files_and_return_video (
     # cv2.waitKey(50)
     # cv2.destroyAllWindows()
 
-    # TODO: Request model to generate a video
-
+    ###############################################################
+    # TODO: 여기에 모델 추가
     # Read video file & convert into generator
     # def iterfile():
     #     yield from original_video.file 
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')   
+    fourcc = cv2.VideoWriter_fourcc(*'H264')        # TODO: 비디오 생성 코덱을 반드시 'H264'로 설정해주셔야 합니다 !!
     cap = cv2.VideoCapture()
     cap.open('../samples/Cat.mp4')
     videoWriter = cv2.VideoWriter('../samples/ResultCat.mp4', fourcc, int(cap.get(cv2.CAP_PROP_FPS)), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
@@ -45,9 +45,17 @@ async def upload_files_and_return_video (
         videoWriter.write(frame)
     cap.release()
     videoWriter.release()
+    ###############################################################
+
+    return 'Complete converting video.'
+
+
+## 비디오 변환 후 완료된 result video를 streaming 하는 get API
+@app.get('/api/get-result/')
+async def get_result_video():
 
     def iterfile():
-        output_video_path = '../samples/Cat.mp4' # 원하는 파일 경로로 변경
+        output_video_path = '../samples/ResultCat.mp4' # 원하는 파일 경로로 변경
         with open(output_video_path, mode='rb') as file_like:
             yield from file_like
 
